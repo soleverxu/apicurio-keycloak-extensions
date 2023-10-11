@@ -16,7 +16,8 @@
 
 package io.apicurio.kc.ext.social;
 
-import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
+import org.jboss.logging.Logger;
+import org.keycloak.broker.oidc.OAuth2IdentityProviderConfig;
 import org.keycloak.broker.provider.AbstractIdentityProviderFactory;
 import org.keycloak.broker.social.SocialIdentityProviderFactory;
 import org.keycloak.models.IdentityProviderModel;
@@ -24,27 +25,35 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.social.github.GitHubIdentityProvider;
 
 /**
- * Provider factory for the local github identity provider.
- * 
+ * Provider factory for the local github Enterprise identity provider.
+ *
  * @author eric.wittmann@gmail.com
  */
 public class LocalGitHubIdentityProviderFactory
         extends AbstractIdentityProviderFactory<GitHubIdentityProvider>
         implements SocialIdentityProviderFactory<GitHubIdentityProvider> {
 
+    protected static final Logger logger = Logger.getLogger(LocalGitHubIdentityProviderFactory.class);
+
     @Override
     public String getName() {
-        return "GitHub (Local)";
+        return "GitHub Enterprise";
     }
 
-    @Override   
+    @Override
     public GitHubIdentityProvider create(KeycloakSession session, IdentityProviderModel model) {
-        return new LocalGitHubIdentityProvider(session, new OIDCIdentityProviderConfig(model));
+        return new LocalGitHubIdentityProvider(session, new OAuth2IdentityProviderConfig(model));
     }
 
     @Override
     public String getId() {
         return "github";
+    }
+
+    @SuppressWarnings("unchecked") // safe b/c OAuth2IdentityProviderConfig extends IdentityProviderModel
+    @Override
+    public OAuth2IdentityProviderConfig createConfig() {
+        return new OAuth2IdentityProviderConfig();
     }
 
 }

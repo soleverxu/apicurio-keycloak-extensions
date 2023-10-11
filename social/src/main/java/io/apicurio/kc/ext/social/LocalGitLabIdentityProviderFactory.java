@@ -31,4 +31,10 @@ public class LocalGitLabIdentityProviderFactory
         return "gitlab";
     }
 
+    @SuppressWarnings("unchecked") // safe b/c OIDCIdentityProviderConfig extends IdentityProviderModel
+    @Override
+    public OIDCIdentityProviderConfig createConfig() {
+        return new OIDCIdentityProviderConfig();
+    }
+
 }
